@@ -32,18 +32,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const singin = async (user) => {
-    try {
-      const res = await loginRequest(user);
-      setIsAuthenticated(true);
-      setUser(res.data);
-    } catch (error) {
-      if (Array.isArray(error.response?.data)) {
-        return setErrors(error.response.data);
+const singup = async (user) => {
+  try {
+    console.log("Intentando registrar:", user); // Para debug
+    const res = await registerRequest(user);
+    console.log("Respuesta del servidor:", res); // Para debug
+    setIsAuthenticated(true);
+    setUser(res.data);
+  } catch (error) {
+    console.error("Error completo:", error); // Para debug
+    console.error("Error response:", error.response); // Para debug
+    
+    // Manejo más robusto de errores
+    if (error.response?.data) {
+      if (Array.isArray(error.response.data)) {
+        setErrors(error.response.data);
+      } else {
+        setErrors([error.response.data.message || error.response.data]);
       }
-      setErrors([error.response?.data?.message || "Error al iniciar sesión"]);
+    } else {
+      setErrors([error.message || "Error de conexión"]);
     }
-  };
+  }
+};
   const logout = async () => {
     try {
       await logoutRequest();
