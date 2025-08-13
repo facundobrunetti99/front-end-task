@@ -1,16 +1,16 @@
 import axios from "./axios";
 
 export const getEpicsRequest = (projectId) =>
-  axios.get(`/projects/${projectId}/epics`);
+  axios.get(`api/projects/${projectId}/epics`);
 
 export const createEpicRequest = (projectId, epic) =>
-  axios.post(`/projects/${projectId}/epics`, epic);
+  axios.post(`api/projects/${projectId}/epics`, epic);
 
 export const getEpicRequest = (projectId, epicId) =>
-  axios.get(`/projects/${projectId}/epics/${epicId}`);
+  axios.get(`api/projects/${projectId}/epics/${epicId}`);
 
 export const updateEpicRequest = (projectId, epicId, epic) =>
-  axios.put(`/projects/${projectId}/epics/${epicId}`, epic);
+  axios.put(`api/projects/${projectId}/epics/${epicId}`, epic);
 
 export const deleteEpicRequest = (projectId, epicId) =>
-  axios.delete(`/projects/${projectId}/epics/${epicId}`);
+  axios.delete(`api/projects/${projectId}/epics/${epicId}`);
