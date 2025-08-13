@@ -1,5 +1,4 @@
-// context/StoryContext.js
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   createStoryRequest,
   getStoriesRequest,
@@ -19,9 +18,25 @@ export const useStory = () => {
 export function StoryProvider({ children }) {
   const [stories, setStories] = useState([]);
 
+  // ✅ SOLUCIÓN: Limpiar estado cuando se hace logout
+  useEffect(() => {
+    const handleLogout = () => {
+      setStories([]);
+    };
+
+    window.addEventListener('auth:logout', handleLogout);
+    return () => window.removeEventListener('auth:logout', handleLogout);
+  }, []);
+
   const createStory = async (projectId, epicId, story) => {
-    const res = await createStoryRequest(projectId, epicId, story);
-    setStories([...stories, res.data]);
+    try {
+      const res = await createStoryRequest(projectId, epicId, story);
+      setStories([...stories, res.data]);
+      return res.data;
+    } catch (error) {
+      console.error("Error al crear story:", error);
+      throw error;
+    }
   };
 
   const getStories = async (projectId, epicId) => {
@@ -30,9 +45,16 @@ export function StoryProvider({ children }) {
       setStories(res.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        console.error(error.response.data.message);
+        console.error("No autorizado:", error.response.data.message);
+        //  Si no está autorizado, limpiar stories
+        setStories([]);
       } else if (error.response && error.response.status === 404) {
         console.error("No se encontraron stories.");
+        setStories([]);
+      } else {
+        console.error("Error al obtener stories:", error);
+        // En caso de error, también limpiar para evitar mostrar datos incorrectos
+        setStories([]);
       }
     }
   };
@@ -44,6 +66,8 @@ export function StoryProvider({ children }) {
     } catch (error) {
       if (error.response && error.response.status === 404) {
         console.error("Story no encontrada para eliminar.");
+      } else {
+        console.error("Error al eliminar story:", error);
       }
     }
   };
@@ -53,9 +77,12 @@ export function StoryProvider({ children }) {
       const res = await getStoryRequest(projectId, epicId, id);
       return res.data;
     } catch (error) {
+      console.error("Error al obtener story:", error);
       if (error.response && error.response.status === 404) {
         console.error("Story no encontrada.");
+        return null;
       }
+      throw error;
     }
   };
 
@@ -65,10 +92,11 @@ export function StoryProvider({ children }) {
       setStories(stories.map((s) => (s._id === id ? res.data : s)));
       return res.data;
     } catch (error) {
-      console.error(error);
+      console.error("Error al actualizar story:", error);
       if (error.response && error.response.status === 404) {
         console.error("Story no encontrada para actualizar.");
       }
+      throw error;
     }
   };
 
