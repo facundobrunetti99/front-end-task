@@ -69,6 +69,10 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
       setErrors([]);
+      
+      // ✅ SOLUCIÓN: Limpiar todos los estados de la aplicación
+      // Esto fuerza un reset completo de la aplicación
+      window.dispatchEvent(new CustomEvent('auth:logout'));
     }
   };
 
@@ -82,7 +86,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     async function checkLogin() {
       try {
-        setLoading(true); // ← Inicia loading
+        setLoading(true);
         const res = await verifyTokenRequest();
         if (res.data?.message) {
           setIsAuthenticated(false);
