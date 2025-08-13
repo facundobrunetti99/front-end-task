@@ -3,28 +3,12 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useProject } from "../components/context/ProjectContext";
 import ProjectCard from "../components/ProjectCard";
-import { useAuth } from '../components/context/AuthContext';
 const ProjectPage = () => {
   const { getProjects, projects } = useProject();
-  const { isAuthenticated, loading,authChecked  } = useAuth();
-  
- useEffect(() => {
-    if (isAuthenticated && !loading && authChecked) {
-      getProjects();
-    }
-  }, [isAuthenticated, loading]);
 
-  if (loading || !authChecked) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <p className="text-white">Verificando autenticación...</p>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
+  useEffect(() => {
+    getProjects();
+  }, []);
 
   if (projects.length <= 0) {
     return (
