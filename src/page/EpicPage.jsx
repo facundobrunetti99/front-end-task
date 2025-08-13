@@ -1,55 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useEpic } from '../components/context/EpicContext';
 import EpicCard from '../components/EpicCard';
-import { useAuth } from '../components/context/AuthContext';
 
 const EpicPage = () => {
   const { getEpics, epics } = useEpic();
-  const { isAuthenticated, loading } = useAuth();
   const { projectId } = useParams();
-  const [isLoadingEpics, setIsLoadingEpics] = useState(true);
 
   useEffect(() => {
-    const fetchEpics = async () => {
-      if (isAuthenticated && !loading && projectId) {
-        setIsLoadingEpics(true);
-        await getEpics(projectId);
-        setIsLoadingEpics(false);
-      } else if (!loading && !isAuthenticated) {
-        // Si no está autenticado, no cargar épicas
-        setIsLoadingEpics(false);
-      }
-    };
-    
-    fetchEpics();
-  }, [projectId, isAuthenticated, loading]);
-
-  // Mostrar loading mientras se verifica auth
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <p className="text-white">Verificando autenticación...</p>
-      </div>
-    );
-  }
-
-  // Si no está autenticado, no mostrar nada (o redirigir)
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  // Mostrar loading mientras se cargan las épicas
-  if (isLoadingEpics) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <p className="text-white">Cargando épicas...</p>
-      </div>
-    );
-  }
+    if (projectId) {
+      getEpics(projectId);
+    }
+  }, [projectId]);
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 py-8">
+    
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-white mb-4">Épicas del Proyecto</h1>
         <Link 
@@ -59,6 +25,7 @@ const EpicPage = () => {
           ← Volver a Proyectos
         </Link>
       </div>
+
     
       {epics.length <= 0 ? (
         <div className='flex flex-col justify-center items-center'>
