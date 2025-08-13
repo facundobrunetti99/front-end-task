@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useEpic } from '../components/context/EpicContext';
 import EpicCard from '../components/EpicCard';
+import { useAuth } from '../components/context/AuthContext';
 
 const EpicPage = () => {
   
