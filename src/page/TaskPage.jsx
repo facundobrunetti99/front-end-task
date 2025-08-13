@@ -12,18 +12,42 @@ const TaskPage = () => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      if (isAuthenticated && !loading && projectId && epicId && storyId) {
-        setIsLoadingTasks(true);
-        await getTasks(projectId, epicId, storyId);
-        setIsLoadingTasks(false);
-      } else if (!loading && !isAuthenticated) {
-        // Si no está autenticado, no cargar tasks
+      // Resetear loading state al inicio
+      setIsLoadingTasks(true);
+      
+      try {
+        if (isAuthenticated && !loading && projectId && epicId && storyId) {
+          await getTasks(projectId, epicId, storyId);
+        }
+      } catch (error) {
+        console.error("Error en TaskPage al cargar tasks:", error);
+      } finally {
         setIsLoadingTasks(false);
       }
     };
     
-    fetchTasks();
+    // Solo ejecutar si no está en loading de auth
+    if (!loading) {
+      fetchTasks();
+    }
   }, [projectId, epicId, storyId, isAuthenticated, loading]);
+
+  // Validar que tenemos todos los parámetros necesarios
+  if (!projectId || !epicId || !storyId) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">Parámetros de ruta inválidos</p>
+          <Link 
+            to="/projects" 
+            className="text-blue-300 hover:underline"
+          >
+            Volver a Proyectos
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Mostrar loading mientras se verifica auth
   if (loading) {
