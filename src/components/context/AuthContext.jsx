@@ -6,9 +6,7 @@ import {
   logoutRequest, 
 } from "../../api/auth";
 import Cookies from "js-cookie";
-
 export const AuthContext = createContext();
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
