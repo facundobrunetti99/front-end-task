@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import {
   createTaskRequest,
   getTasksRequest,
@@ -18,25 +18,9 @@ export const useTask = () => {
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
 
-  // ✅ SOLUCIÓN: Limpiar estado cuando se hace logout
-  useEffect(() => {
-    const handleLogout = () => {
-      setTasks([]);
-    };
-
-    window.addEventListener('auth:logout', handleLogout);
-    return () => window.removeEventListener('auth:logout', handleLogout);
-  }, []);
-
   const createTask = async (projectId, epicId, storyId, task) => {
-    try {
-      const res = await createTaskRequest(projectId, epicId, storyId, task);
-      setTasks([...tasks, res.data]);
-      return res.data;
-    } catch (error) {
-      console.error("Error al crear tarea:", error);
-      throw error;
-    }
+    const res = await createTaskRequest(projectId, epicId, storyId, task);
+    setTasks([...tasks, res.data]);
   };
 
   const getTasks = async (projectId, epicId, storyId) => {
@@ -44,20 +28,10 @@ export function TaskProvider({ children }) {
       const res = await getTasksRequest(projectId, epicId, storyId);
       setTasks(res.data);
     } catch (error) {
-      if (error.response?.status === 401) {
-        console.error("No autorizado:", error.response.data.message);
-        // ✅ Si no está autorizado, limpiar tasks
-        setTasks([]);
-      } else if (error.response?.status === 400) {
-        console.error("Solicitud incorrecta:", error.response.data.message);
-        setTasks([]);
+      if (error.response?.status === 401 || error.response?.status === 400) {
+        console.error(error.response.data.message);
       } else if (error.response?.status === 404) {
         console.error("No se encontraron tareas.");
-        setTasks([]);
-      } else {
-        console.error("Error al obtener tareas:", error);
-        // En caso de error, también limpiar para evitar mostrar datos incorrectos
-        setTasks([]);
       }
     }
   };
@@ -69,8 +43,6 @@ export function TaskProvider({ children }) {
     } catch (error) {
       if (error.response?.status === 404) {
         console.error("Tarea no encontrada para eliminar.");
-      } else {
-        console.error("Error al eliminar tarea:", error);
       }
     }
   };
@@ -80,12 +52,9 @@ export function TaskProvider({ children }) {
       const res = await getTaskRequest(projectId, epicId, storyId, id);
       return res.data;
     } catch (error) {
-      console.error("Error al obtener tarea:", error);
       if (error.response?.status === 404) {
         console.error("Tarea no encontrada.");
-        return null;
       }
-      throw error;
     }
   };
 
@@ -95,11 +64,10 @@ export function TaskProvider({ children }) {
       setTasks(tasks.map((t) => (t._id === id ? res.data : t)));
       return res.data;
     } catch (error) {
-      console.error("Error al actualizar tarea:", error);
+      console.error(error);
       if (error.response?.status === 404) {
         console.error("Tarea no encontrada para actualizar.");
       }
-      throw error;
     }
   };
 
