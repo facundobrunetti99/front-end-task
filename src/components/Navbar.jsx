@@ -19,13 +19,14 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Detectar si es móvil
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth < 768) {
-        setIsOpen(false);
+        setIsOpen(false); // En móviles, iniciar cerrado
       } else {
-        setIsOpen(true); 
+        setIsOpen(true); // En escritorio, iniciar abierto
       }
     };
 
@@ -102,7 +103,7 @@ function Navbar() {
   };
 
   const handleLinkClick = () => {
-   
+    // En móviles, cerrar el menú cuando se hace clic en un link
     if (isMobile) {
       setIsOpen(false);
     }
@@ -119,7 +120,7 @@ function Navbar() {
 
   return (
     <div className="flex min-h-screen">
-      
+      {/* Botón flotante para móviles cuando el menú está cerrado */}
       {isMobile && !isOpen && (
         <button
           onClick={handleToggleMenu}
@@ -129,6 +130,7 @@ function Navbar() {
         </button>
       )}
 
+      {/* Overlay para móviles */}
       {isMobile && isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -136,22 +138,17 @@ function Navbar() {
         />
       )}
 
-    
-      <div
-        className={`${
-          isMobile 
-            ? isOpen 
+      {/* Sidebar - solo se renderiza si no es móvil O si es móvil y está abierto */}
+      {(!isMobile || (isMobile && isOpen)) && (
+        <div
+          className={`${
+            isMobile 
               ? "w-64 translate-x-0" 
-              : "w-0 -translate-x-full"
-            : isOpen 
-              ? "w-64" 
-              : "w-16"
-        } h-screen bg-gray-800 text-white transition-all duration-300 flex flex-col ${
-          isMobile 
-            ? "fixed top-0 left-0 z-50" 
-            : "fixed top-0 left-0 z-50"
-        } overflow-hidden`}
-      >
+              : isOpen 
+                ? "w-64" 
+                : "w-16"
+          } h-screen bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 z-50 overflow-hidden`}
+        >
         <div className="p-4 flex items-center justify-between min-h-[60px]">
           <span className={`text-lg font-bold transition-opacity duration-300 ${
             isMobile ? (isOpen ? "opacity-100" : "opacity-0") : (isOpen ? "opacity-100" : "opacity-0")
@@ -424,7 +421,9 @@ function Navbar() {
             </>
           )}
         </div>
-      </div>
+      )}
+
+      {/* Contenido principal */}
       <div
         className={`${
           isMobile 
