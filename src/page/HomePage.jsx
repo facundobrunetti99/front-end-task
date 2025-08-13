@@ -52,11 +52,11 @@ const HomePage = () => {
     
         <div className="max-w-6xl mx-auto text-center mb-16">
           <div className="flex items-center justify-center mb-4">
-            <Sparkles className="mr-3 text-yellow-400" size={32} />
+         
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
               ¡Hola, {user?.username}!
             </h1>
-            <Sparkles className="ml-3 text-yellow-400" size={32} />
+         
           </div>
           <p className="text-gray-300 text-lg md:text-xl mb-8">
             Bienvenido a tu espacio de productividad. ¿Qué quieres lograr hoy?
