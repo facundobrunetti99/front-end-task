@@ -6,15 +6,15 @@ import ProjectCard from "../components/ProjectCard";
 import { useAuth } from '../components/context/AuthContext';
 const ProjectPage = () => {
   const { getProjects, projects } = useProject();
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading,authChecked  } = useAuth();
   
  useEffect(() => {
-    if (isAuthenticated && !loading) {
+    if (isAuthenticated && !loading && authChecked) {
       getProjects();
     }
   }, [isAuthenticated, loading]);
 
-  if (loading) {
+  if (loading || !authChecked) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
         <p className="text-white">Verificando autenticación...</p>
