@@ -19,12 +19,11 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth < 768) {
-        setIsOpen(false); 
+        setIsOpen(false);
       } else {
         setIsOpen(true); 
       }
@@ -119,8 +118,8 @@ function Navbar() {
   const currentTasks = tasks.slice(0, 8);
 
   return (
-    <div className="flex">
- 
+    <div className="flex min-h-screen">
+      
       {isMobile && !isOpen && (
         <button
           onClick={handleToggleMenu}
@@ -130,7 +129,6 @@ function Navbar() {
         </button>
       )}
 
-
       {isMobile && isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -138,7 +136,7 @@ function Navbar() {
         />
       )}
 
-   
+    
       <div
         className={`${
           isMobile 
@@ -434,7 +432,7 @@ function Navbar() {
             : isOpen 
               ? "ml-64" 
               : "ml-16"
-        } transition-all duration-300 w-full min-h-screen`}
+        } transition-all duration-300 flex-1`}
       >
         <Outlet />
       </div>
