@@ -54,14 +54,12 @@ export function ProjectProvider({ children }) {
   };
 
   const getProjects = async () => {
-    // VALIDACIÓN ESTRICTA: No hacer nada si no cumple TODAS las condiciones
-    if (!isAuthenticated || !user || loading) {
-      console.log("getProjects cancelado:", { isAuthenticated, user: !!user, loading });
+    // No hacer la petición si no está autenticado o está cargando
+    if (!isAuthenticated || loading) {
       return;
     }
 
     try {
-      console.log("getProjects ejecutándose para usuario:", user?.username || user?._id);
       const res = await getProjectsRequest();
       setProjects(res.data);
     } catch (error) {
@@ -73,7 +71,6 @@ export function ProjectProvider({ children }) {
         setProjects([]); // Establecer array vacío si no hay proyectos
       } else {
         console.error("Error al obtener proyectos:", error);
-        clearProjects(); // Limpiar en caso de error
       }
     }
   };
