@@ -6,13 +6,25 @@ import StoryCard from "../components/StoryCard";
 const StoryPage = () => {
   const { projectId, epicId } = useParams();
   const { getStories, stories } = useStory();
-
+ const { isAuthenticated, loading } = useAuth();
   useEffect(() => {
-    if (projectId && epicId) {
+    if (projectId && !loading && epicId) {
       getStories(projectId, epicId);
     }
   }, [projectId, epicId]);
+if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <p className="text-white">Verificando autenticación...</p>
+      </div>
+    );
+  }
 
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  
   if (stories.length <= 0) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
