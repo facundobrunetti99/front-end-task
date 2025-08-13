@@ -7,13 +7,16 @@ import { useAuth } from '../components/context/AuthContext';
 function ProjectFormPage() {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const { createProject, getProject, updateProject } = useProject();
-  const { isAuthenticated, loading: authLoading, authChecked } = useAuth();
+  const { isAuthenticated, loading: authLoading, authChecked, user} = useAuth();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    reset(); // Limpiar completamente el formulario
+  }, [user, reset]);
   // Redirigir si no está autenticado después de verificar
   useEffect(() => {
     if (authChecked && !isAuthenticated) {
