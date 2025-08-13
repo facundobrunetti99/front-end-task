@@ -2,11 +2,13 @@
 logs
 *.log
 npm-debug.log*
+.env.local
+.env.*.local
+.env
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
 node_modules
 dist
 dist-ssr
