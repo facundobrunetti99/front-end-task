@@ -19,7 +19,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
-
+  const singin = async (user) => {
+    try {
+      const res = await loginRequest(user);
+      setIsAuthenticated(true);
+      setUser(res.data);
+    } catch (error) {
+      if (Array.isArray(error.response?.data)) {
+        return setErrors(error.response.data);
+      }
+      setErrors([error.response?.data?.message || "Error al iniciar sesión"]);
+    }
+  };
  const singup = async (user) => {
     try {
       console.log("Intentando registrar:", user); 
