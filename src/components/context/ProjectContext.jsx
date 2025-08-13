@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import {
   getProjectRequest,
   getProjectsRequest,
@@ -6,10 +6,7 @@ import {
   updateProjectRequest,
   createProjectRequest,
 } from "../../api/project.js";
-import { useAuth } from "./AuthContext.js"; 
-
 const ProjectContext = createContext();
-
 export const useProject = () => {
   const context = useContext(ProjectContext);
   if (!context) {
@@ -17,36 +14,32 @@ export const useProject = () => {
   }
   return context;
 };
-
 export function ProjectProvider({ children }) {
   const [projects, setProjects] = useState([]);
   const { isAuthenticated, user, loading } = useAuth();
 
-
+  // Función para limpiar proyectos
   const clearProjects = () => {
     setProjects([]);
   };
 
- 
+  // Limpiar proyectos automáticamente cuando cambie la autenticación
   useEffect(() => {
     if (!isAuthenticated || !user) {
       clearProjects();
     }
   }, [isAuthenticated, user]);
 
-  const createProject = async (project) => {
-    try {
-      const res = await createProjectRequest(project);
-      setProjects([...projects, res.data]);
-      console.log(res.data);
-      return res.data;
-    } catch (error) {
-      console.error("Error al crear proyecto:", error);
-      throw error;
-    }
-  };
 
-  const getProjects = async () => {
+  
+  const createProject = async (project) => {
+    const res = await createProjectRequest(project);
+    setProjects([...projects, res.data]);
+    console.log(res.data);
+    return res.data;
+  };
+const getProjects = async () => {
+    // No hacer la petición si no está autenticado o está cargando
     if (!isAuthenticated || loading) {
       return;
     }
@@ -60,26 +53,22 @@ export function ProjectProvider({ children }) {
         clearProjects(); // Limpiar proyectos si no está autorizado
       } else if (error.response && error.response.status === 404) {
         console.error("No se encontraron Proyectos.");
-        setProjects([]);
+        setProjects([]); // Establecer array vacío si no hay proyectos
       } else {
         console.error("Error al obtener proyectos:", error);
       }
     }
   };
-
   const deleteProject = async (id) => {
     try {
       await deleteProjectRequest(id);
       setProjects(projects.filter((project) => project._id !== id));
     } catch (error) {
-      console.error("Error al eliminar proyecto:", error);
       if (error.response && error.response.status === 404) {
         console.error("Proyecto no encontrado para eliminar.");
       }
-      throw error;
     }
   };
-
   const getProject = async (id) => {
     try {
       const res = await getProjectRequest(id);
@@ -93,7 +82,6 @@ export function ProjectProvider({ children }) {
       throw error;
     }
   };
-
   const updateProject = async (id, project) => {
     try {
       const res = await updateProjectRequest(id, project);
@@ -107,7 +95,6 @@ export function ProjectProvider({ children }) {
       throw error;
     }
   };
-
   return (
     <ProjectContext.Provider
       value={{
@@ -117,10 +104,11 @@ export function ProjectProvider({ children }) {
         getProjects,
         deleteProject,
         updateProject,
-        clearProjects, 
+        clearProjects,
       }}
     >
       {children}
     </ProjectContext.Provider>
   );
 }
+
