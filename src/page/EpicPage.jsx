@@ -4,15 +4,27 @@ import { useEpic } from '../components/context/EpicContext';
 import EpicCard from '../components/EpicCard';
 
 const EpicPage = () => {
+  
   const { getEpics, epics } = useEpic();
+ const { isAuthenticated, loading } = useAuth();
   const { projectId } = useParams();
 
   useEffect(() => {
-    if (projectId) {
+    if (isAuthenticated && !loading && projectId) {
       getEpics(projectId);
     }
   }, [projectId]);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <p className="text-white">Verificando autenticación...</p>
+      </div>
+    );
+  }
 
+  if (!isAuthenticated) {
+    return null;
+  }
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 py-8">
     
