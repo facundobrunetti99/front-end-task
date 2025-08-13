@@ -1,86 +1,60 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useProject } from "../components/context/ProjectContext";
 import { useAuth } from "../components/context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import ProjectCard from "../components/ProjectCard";
 
-const RegisterPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const { singup, isAuthenticated, errors: registerErrors } = useAuth();
-  const navigate = useNavigate();
+const ProjectPage = () => {
+  const { getProjects, projects } = useProject();
+  const { isAuthenticated, loading } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/projects");
-  }, [isAuthenticated]);
+    if (isAuthenticated && !loading) {
+      getProjects();
+    }
+  }, [isAuthenticated, loading]);
 
-  const onSubmit = handleSubmit(async (values) => {
-    await singup(values);
-  });
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <p className="text-white">Verificando autenticación...</p>
+      </div>
+    );
+  }
+
+ 
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  if (projects.length <= 0) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
+        <p className="text-white mb-4">No hay proyectos disponibles</p>
+        <div>
+          <Link className="text-sky-200" to={"/project"}>
+            Cargar proyecto
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-900">
-      <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
-        {registerErrors.map((error, i) => (
-          <div key={i} className="bg-red-500 p-2 mb-2 rounded text-white">
-            {error}
-          </div>
-        ))}
-        <h1 className="text-2xl font-bold text-white mb-4">Registrarse</h1>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            {...register("username", { required: true })}
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-2"
-            placeholder="Nombre de usuario"
-          />
-          {errors.username && (
-            <p className="text-red-500 text-sm mb-2">
-              El usuario es requerido
-            </p>
-          )}
-
-          <input
-            type="text"
-            {...register("email", { required: true })}
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-2"
-            placeholder="Ingrese su email"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mb-2">El mail es requerido</p>
-          )}
-
-          <input
-            type="password"
-            {...register("password", { required: true })}
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-2"
-            placeholder="Ingrese su contraseña"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mb-2">
-              La contraseña es requerida
-            </p>
-          )}
-
-          <button
-            type="submit"
-            className="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded mt-2"
-          >
-            Registrar
-          </button>
-        </form>
-
-        <p className="text-gray-300 mt-4 text-sm text-center">
-          ¿Ya tienes una cuenta?{" "}
-          <Link to="/login" className="text-sky-400 hover:underline">
-            Iniciar sesión
-          </Link>
-        </p>
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <ProjectCard project={project} key={project._id} />
+          ))}
+        </div>
       </div>
+      <Link to={"/project"} className="text-sky-200 my-5">
+        Cargar Proyectos
+      </Link>
     </div>
   );
 };
 
-export default RegisterPage;
+export default ProjectPage;
