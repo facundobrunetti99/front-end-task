@@ -17,6 +17,24 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setIsOpen(false); 
+      } else {
+        setIsOpen(true); 
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const getCurrentIds = () => {
     const pathParts = location.pathname.split("/");
@@ -80,6 +98,17 @@ function Navbar() {
     navigate("/");
   };
 
+  const handleToggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleLinkClick = () => {
+   
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  };
+
   const currentProject = projects.find((p) => p._id === currentProjectId);
   const currentEpic = epics.find((e) => e._id === currentEpicId);
   const currentStory = stories.find((s) => s._id === currentStoryId);
@@ -91,45 +120,91 @@ function Navbar() {
 
   return (
     <div className="flex">
+ 
+      {isMobile && !isOpen && (
+        <button
+          onClick={handleToggleMenu}
+          className="fixed top-4 left-4 z-50 bg-gray-800 text-white p-3 rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
+
+      {isMobile && isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={handleToggleMenu}
+        />
+      )}
+
+   
       <div
         className={`${
-          isOpen ? "w-64" : "w-16"
-        } h-screen bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 z-50 overflow-y-auto`}
+          isMobile 
+            ? isOpen 
+              ? "w-64 translate-x-0" 
+              : "w-0 -translate-x-full"
+            : isOpen 
+              ? "w-64" 
+              : "w-16"
+        } h-screen bg-gray-800 text-white transition-all duration-300 flex flex-col ${
+          isMobile 
+            ? "fixed top-0 left-0 z-50" 
+            : "fixed top-0 left-0 z-50"
+        } overflow-hidden`}
       >
-        <div className="p-4 flex items-center justify-between">
-          <span className="text-lg font-bold">
-            {isOpen ? "Administrador de Tareas" : "AT"}
+        <div className="p-4 flex items-center justify-between min-h-[60px]">
+          <span className={`text-lg font-bold transition-opacity duration-300 ${
+            isMobile ? (isOpen ? "opacity-100" : "opacity-0") : (isOpen ? "opacity-100" : "opacity-0")
+          }`}>
+            {(isMobile && isOpen) || (!isMobile && isOpen) ? "Administrador de Tareas" : "AT"}
           </span>
-          <button onClick={() => setIsOpen(!isOpen)} className="ml-auto">
+          {!isMobile && (
+            <span className={`text-lg font-bold transition-opacity duration-300 ${
+              !isOpen ? "opacity-100" : "opacity-0"
+            }`}>
+              {!isOpen ? "AT" : ""}
+            </span>
+          )}
+          <button 
+            onClick={handleToggleMenu} 
+            className={`${isMobile && !isOpen ? "hidden" : "block"} hover:bg-gray-700 p-1 rounded transition-colors`}
+          >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
-        <div className="flex-1 flex flex-col gap-2 px-4 pb-4">
+        <div className={`flex-1 flex flex-col gap-2 px-4 pb-4 overflow-y-auto ${
+          isMobile && !isOpen ? "hidden" : "block"
+        }`}>
           {!isAuthenticated ? (
             <>
               <Link
                 to="/"
+                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "🏠 Inicio" : "🏠"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🏠 Inicio" : "🏠"}
               </Link>
               <Link
                 to="/login"
+                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "🔑 Iniciar sesión" : "🔑"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🔑 Iniciar sesión" : "🔑"}
               </Link>
               <Link
                 to="/register"
+                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "📝 Registrarse" : "📝"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "📝 Registrarse" : "📝"}
               </Link>
             </>
           ) : (
             <>
-              {isOpen && (
+              {((isMobile && isOpen) || (!isMobile && isOpen)) && (
                 <p className="text-gray-400 mb-4 text-sm border-b border-gray-600 pb-2">
                   Bienvenido <b>{user.username}</b>
                 </p>
@@ -137,12 +212,13 @@ function Navbar() {
 
               <Link
                 to="/"
+                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "🏠 Inicio" : "🏠"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🏠 Inicio" : "🏠"}
               </Link>
 
-              {isOpen && currentProject && (
+              {((isMobile && isOpen) || (!isMobile && isOpen)) && currentProject && (
                 <div className="bg-gray-700 rounded p-3 mb-4">
                   <div className="text-xs text-gray-300 mb-1">
                     CONTEXTO ACTUAL
@@ -177,25 +253,27 @@ function Navbar() {
                 </div>
               )}
 
-              {isOpen && (
+              {((isMobile && isOpen) || (!isMobile && isOpen)) && (
                 <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
                   PROYECTOS
                 </h3>
               )}
               <Link
                 to="/projects"
+                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "📁 Ver Proyectos" : "📁"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "📁 Ver Proyectos" : "📁"}
               </Link>
               <Link
                 to="/project"
+                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "➕ Nuevo Proyecto" : "➕"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "➕ Nuevo Proyecto" : "➕"}
               </Link>
 
-              {isOpen && recentProjects.length > 0 && (
+              {((isMobile && isOpen) || (!isMobile && isOpen)) && recentProjects.length > 0 && (
                 <>
                   <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
                     PROYECTOS RECIENTES
@@ -204,6 +282,7 @@ function Navbar() {
                     <Link
                       key={project._id}
                       to={`/projects/${project._id}/epics`}
+                      onClick={handleLinkClick}
                       className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm ${
                         currentProjectId === project._id
                           ? "bg-blue-900 text-blue-200"
@@ -216,7 +295,7 @@ function Navbar() {
                 </>
               )}
 
-              {isOpen && currentProjectId && currentEpics.length > 0 && (
+              {((isMobile && isOpen) || (!isMobile && isOpen)) && currentProjectId && currentEpics.length > 0 && (
                 <>
                   <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
                     ÉPICAS ACTUALES
@@ -225,6 +304,7 @@ function Navbar() {
                     <Link
                       key={epic._id}
                       to={`/projects/${currentProjectId}/epics/${epic._id}/stories`}
+                      onClick={handleLinkClick}
                       className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm ${
                         currentEpicId === epic._id
                           ? "bg-blue-900 text-blue-200"
@@ -236,6 +316,7 @@ function Navbar() {
                   ))}
                   <Link
                     to={`/projects/${currentProjectId}/epics/new`}
+                    onClick={handleLinkClick}
                     className="text-gray-400 hover:text-gray-200 py-1 px-2 rounded hover:bg-gray-700 transition-colors text-xs"
                   >
                     ➕ Nueva Épica
@@ -243,7 +324,7 @@ function Navbar() {
                 </>
               )}
 
-              {isOpen &&
+              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
                 currentProjectId &&
                 currentEpicId &&
                 currentStories.length > 0 && (
@@ -255,6 +336,7 @@ function Navbar() {
                       <Link
                         key={story._id}
                         to={`/projects/${currentProjectId}/epics/${currentEpicId}/stories/${story._id}/tasks`}
+                        onClick={handleLinkClick}
                         className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm ${
                           currentStoryId === story._id
                             ? "bg-green-900 text-green-200"
@@ -266,6 +348,7 @@ function Navbar() {
                     ))}
                     <Link
                       to={`/projects/${currentProjectId}/epics/${currentEpicId}/story`}
+                      onClick={handleLinkClick}
                       className="text-gray-400 hover:text-gray-200 py-1 px-2 rounded hover:bg-gray-700 transition-colors text-xs"
                     >
                       ➕ Nueva Historia
@@ -273,7 +356,7 @@ function Navbar() {
                   </>
                 )}
 
-              {isOpen &&
+              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
                 currentProjectId &&
                 currentEpicId &&
                 currentStoryId &&
@@ -287,6 +370,7 @@ function Navbar() {
                         <Link
                           key={task._id}
                           to={`/projects/${currentProjectId}/epics/${currentEpicId}/stories/${currentStoryId}/task/${task._id}`}
+                          onClick={handleLinkClick}
                           className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm block mb-1 ${
                             task.completed ? "text-green-400" : "text-gray-300"
                           }`}
@@ -302,6 +386,7 @@ function Navbar() {
                     </div>
                     <Link
                       to={`/projects/${currentProjectId}/epics/${currentEpicId}/stories/${currentStoryId}/task`}
+                      onClick={handleLinkClick}
                       className="text-gray-400 hover:text-gray-200 py-1 px-2 rounded hover:bg-gray-700 transition-colors text-xs"
                     >
                       ➕ Nueva Tarea
@@ -309,13 +394,13 @@ function Navbar() {
                   </>
                 )}
 
-              {isOpen && !currentProjectId && (
+              {((isMobile && isOpen) || (!isMobile && isOpen)) && !currentProjectId && (
                 <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
                   💡 Selecciona un proyecto para ver toda la jerarquía
                 </div>
               )}
 
-              {isOpen &&
+              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
                 currentProjectId &&
                 !currentEpicId &&
                 epics.length === 0 && (
@@ -324,7 +409,7 @@ function Navbar() {
                   </div>
                 )}
 
-              {isOpen &&
+              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
                 currentEpicId &&
                 !currentStoryId &&
                 stories.length === 0 && (
@@ -336,17 +421,20 @@ function Navbar() {
                 onClick={handleLogout}
                 className="text-gray-300 hover:text-white text-left mt-auto py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {isOpen ? "🚪 Cerrar Sesión" : "🚪"}
+                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🚪 Cerrar Sesión" : "🚪"}
               </button>
             </>
           )}
         </div>
       </div>
-
       <div
         className={`${
-          isOpen ? "ml-64" : "ml-16"
-        } transition-all duration-300 w-full`}
+          isMobile 
+            ? "ml-0" 
+            : isOpen 
+              ? "ml-64" 
+              : "ml-16"
+        } transition-all duration-300 w-full min-h-screen`}
       >
         <Outlet />
       </div>
