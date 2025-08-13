@@ -21,16 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
-
-  const singup = async (user) => {
-    try {
-      const res = await registerRequest(user);
-      setIsAuthenticated(true);
-      setUser(res.data);
-    } catch (error) {
-      setErrors(error.response?.data || ["Error al registrar"]);
-    }
-  };
+  const [loading, setLoading] = useState(true); 
 
   const singin = async (user) => {
     try {
@@ -44,6 +35,30 @@ export const AuthProvider = ({ children }) => {
       setErrors([error.response?.data?.message || "Error al iniciar sesión"]);
     }
   };
+
+  const singup = async (user) => {
+    try {
+      console.log("Intentando registrar:", user); 
+      const res = await registerRequest(user);
+      console.log("Respuesta del servidor:", res); 
+      setIsAuthenticated(true);
+      setUser(res.data);
+    } catch (error) {
+      console.error("Error completo:", error); 
+      console.error("Error response:", error.response); 
+      
+      if (error.response?.data) {
+        if (Array.isArray(error.response.data)) {
+          setErrors(error.response.data);
+        } else {
+          setErrors([error.response.data.message || error.response.data]);
+        }
+      } else {
+        setErrors([error.message || "Error de conexión"]);
+      }
+    }
+  };
+
   const logout = async () => {
     try {
       await logoutRequest();
@@ -54,6 +69,9 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
       setErrors([]);
+      
+  
+      window.dispatchEvent(new CustomEvent('auth:logout'));
     }
   };
 
@@ -67,6 +85,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     async function checkLogin() {
       try {
+        setLoading(true);
         const res = await verifyTokenRequest();
         if (res.data?.message) {
           setIsAuthenticated(false);
@@ -78,15 +97,24 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         setIsAuthenticated(false);
         setUser(null);
+      } finally {
+        setLoading(false); 
       }
     }
-
     checkLogin();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ singup, singin, logout, user, isAuthenticated, errors }}
+      value={{ 
+        singup, 
+        singin, 
+        logout, 
+        user, 
+        isAuthenticated, 
+        errors, 
+        loading 
+      }}
     >
       {children}
     </AuthContext.Provider>
