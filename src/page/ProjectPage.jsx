@@ -1,19 +1,41 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useProject } from "../components/context/ProjectContext";
+import { useAuth } from "../components/context/AuthContext"; // Importar useAuth
 import ProjectCard from "../components/ProjectCard";
+
 const ProjectPage = () => {
   const { getProjects, projects } = useProject();
+  const { isAuthenticated, loading } = useAuth(); // Usar estado de auth
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
 
   useEffect(() => {
-    getProjects();
-  }, []);
+    const fetchProjects = async () => {
+      if (isAuthenticated && !loading) {
+        setIsLoadingProjects(true);
+        await getProjects();
+        setIsLoadingProjects(false);
+      }
+    };
+    
+    fetchProjects();
+  }, [isAuthenticated, loading]); // Dependencias importantes
 
+  // ✅ Mostrar loading mientras se verifica auth o cargan proyectos
+  if (loading || isLoadingProjects) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
+        <p className="text-white">Cargando...</p>
+      </div>
+    );
+  }
+
+  // ✅ Si no hay proyectos Y ya terminó de cargar
   if (projects.length <= 0) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
-        <p className="text-white mb-4">No hay proyects disponibles</p>
+        <p className="text-white mb-4">No hay proyectos disponibles</p>
         <div>
           <Link className="text-sky-200" to={"/project"}>
             Cargar proyecto
@@ -22,17 +44,14 @@ const ProjectPage = () => {
       </div>
     );
   }
+
   return (
-    <div className="flex  flex-col justify-center items-center min-h-screen bg-gray-900">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.length <= 0 ? (
-            <p className="text-white">No hay proyects disponibles</p>
-          ) : (
-            projects.map((project) => (
-              <ProjectCard project={project} key={project._id}></ProjectCard>
-            ))
-          )}
+          {projects.map((project) => (
+            <ProjectCard project={project} key={project._id} />
+          ))}
         </div>
       </div>
       <Link to={"/project"} className="text-sky-200 my-5">
