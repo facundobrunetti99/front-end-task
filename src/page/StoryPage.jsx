@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useStory } from "../components/context/StoryContext";
 import StoryCard from "../components/StoryCard";
+import { useAuth } from '../components/context/AuthContext';
 
 const StoryPage = () => {
   const { projectId, epicId } = useParams();
