@@ -2,17 +2,29 @@ import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTask } from "../components/context/TaskContext";
 import TaskCard from "../components/TaskCard";
+import { useAuth } from '../components/context/AuthContext';
 
 const TaskPage = () => {
   const { projectId, epicId, storyId } = useParams();
   const { getTasks, tasks } = useTask();
-
+  const { isAuthenticated, loading } = useAuth();
   useEffect(() => {
-    if (projectId && epicId && storyId) {
+    if (projectId && epicId && storyId && !loading) {
       getTasks(projectId, epicId, storyId);
     }
   }, [projectId, epicId, storyId]);
+  
+if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <p className="text-white">Verificando autenticación...</p>
+      </div>
+    );
+  }
 
+  if (!isAuthenticated) {
+    return null;
+  }
   if (tasks.length <= 0) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900">
