@@ -32,29 +32,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-const singup = async (user) => {
-  try {
-    console.log("Intentando registrar:", user); // Para debug
-    const res = await registerRequest(user);
-    console.log("Respuesta del servidor:", res); // Para debug
-    setIsAuthenticated(true);
-    setUser(res.data);
-  } catch (error) {
-    console.error("Error completo:", error); // Para debug
-    console.error("Error response:", error.response); // Para debug
-    
-    // Manejo más robusto de errores
-    if (error.response?.data) {
-      if (Array.isArray(error.response.data)) {
-        setErrors(error.response.data);
+ const singup = async (user) => {
+    try {
+      console.log("Intentando registrar:", user); 
+      const res = await registerRequest(user);
+      console.log("Respuesta del servidor:", res); 
+      setIsAuthenticated(true);
+      setUser(res.data);
+    } catch (error) {
+      console.error("Error completo:", error); 
+      console.error("Error response:", error.response); 
+      
+      if (error.response?.data) {
+        if (Array.isArray(error.response.data)) {
+          setErrors(error.response.data);
+        } else {
+          setErrors([error.response.data.message || error.response.data]);
+        }
       } else {
-        setErrors([error.response.data.message || error.response.data]);
+        setErrors([error.message || "Error de conexión"]);
       }
-    } else {
-      setErrors([error.message || "Error de conexión"]);
     }
-  }
-};
+  };
   const logout = async () => {
     try {
       await logoutRequest();
