@@ -17,24 +17,6 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detectar si es móvil
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
-        setIsOpen(false); // En móviles, iniciar cerrado
-      } else {
-        setIsOpen(true); // En escritorio, iniciar abierto
-      }
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const getCurrentIds = () => {
     const pathParts = location.pathname.split("/");
@@ -98,17 +80,6 @@ function Navbar() {
     navigate("/");
   };
 
-  const handleToggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleLinkClick = () => {
-    // En móviles, cerrar el menú cuando se hace clic en un link
-    if (isMobile) {
-      setIsOpen(false);
-    }
-  };
-
   const currentProject = projects.find((p) => p._id === currentProjectId);
   const currentEpic = epics.find((e) => e._id === currentEpicId);
   const currentStory = stories.find((s) => s._id === currentStoryId);
@@ -119,101 +90,66 @@ function Navbar() {
   const currentTasks = tasks.slice(0, 8);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Botón flotante para móviles cuando el menú está cerrado */}
-      {isMobile && !isOpen && (
+    <div className="flex">
+      {/* Botón flotante cuando la barra está cerrada */}
+      {!isOpen && (
         <button
-          onClick={handleToggleMenu}
-          className="fixed top-4 left-4 z-50 bg-gray-800 text-white p-3 rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
+          onClick={() => setIsOpen(true)}
+          className="fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-md shadow-lg hover:bg-gray-700 transition-colors"
         >
           <Menu size={20} />
         </button>
       )}
 
-      {/* Overlay para móviles */}
-      {isMobile && isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={handleToggleMenu}
-        />
-      )}
-
-      {/* Sidebar - solo se renderiza si no es móvil O si es móvil y está abierto */}
-      {(!isMobile || (isMobile && isOpen)) && (
-        <div
-          className={`${
-            isMobile 
-              ? "w-64 translate-x-0" 
-              : isOpen 
-                ? "w-64" 
-                : "w-16"
-          } h-screen bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 z-50 overflow-hidden`}
-        >
-        <div className="p-4 flex items-center justify-between min-h-[60px]">
-          <span className={`text-lg font-bold transition-opacity duration-300 ${
-            isMobile ? (isOpen ? "opacity-100" : "opacity-0") : (isOpen ? "opacity-100" : "opacity-0")
-          }`}>
-            {(isMobile && isOpen) || (!isMobile && isOpen) ? "Administrador de Tareas" : "AT"}
-          </span>
-          {!isMobile && (
-            <span className={`text-lg font-bold transition-opacity duration-300 ${
-              !isOpen ? "opacity-100" : "opacity-0"
-            }`}>
-              {!isOpen ? "AT" : ""}
-            </span>
-          )}
-          <button 
-            onClick={handleToggleMenu} 
-            className={`${isMobile && !isOpen ? "hidden" : "block"} hover:bg-gray-700 p-1 rounded transition-colors`}
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
+      {/* Barra lateral */}
+      <div
+        className={`${
+          isOpen ? "w-64" : "w-0"
+        } h-screen bg-gray-800 text-white transition-all duration-300 flex flex-col fixed top-0 left-0 z-50 overflow-hidden`}
+      >
+        <div className="p-4 flex items-center justify-between min-w-64">
+          <span className="text-lg font-bold">Administrador de Tareas</span>
+          <button onClick={() => setIsOpen(false)} className="ml-auto">
+            <X size={20} />
           </button>
         </div>
 
-        <div className={`flex-1 flex flex-col gap-2 px-4 pb-4 overflow-y-auto ${
-          isMobile && !isOpen ? "hidden" : "block"
-        }`}>
+        <div className="flex-1 flex flex-col gap-2 px-4 pb-4 overflow-y-auto min-w-64">
           {!isAuthenticated ? (
             <>
               <Link
                 to="/"
-                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🏠 Inicio" : "🏠"}
+                🏠 Inicio
               </Link>
               <Link
                 to="/login"
-                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🔑 Iniciar sesión" : "🔑"}
+                🔑 Iniciar sesión
               </Link>
               <Link
                 to="/register"
-                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "📝 Registrarse" : "📝"}
+                📝 Registrarse
               </Link>
             </>
           ) : (
             <>
-              {((isMobile && isOpen) || (!isMobile && isOpen)) && (
-                <p className="text-gray-400 mb-4 text-sm border-b border-gray-600 pb-2">
-                  Bienvenido <b>{user.username}</b>
-                </p>
-              )}
+              <p className="text-gray-400 mb-4 text-sm border-b border-gray-600 pb-2">
+                Bienvenido <b>{user.username}</b>
+              </p>
 
               <Link
                 to="/"
-                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🏠 Inicio" : "🏠"}
+                🏠 Inicio
               </Link>
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) && currentProject && (
+              {currentProject && (
                 <div className="bg-gray-700 rounded p-3 mb-4">
                   <div className="text-xs text-gray-300 mb-1">
                     CONTEXTO ACTUAL
@@ -248,27 +184,23 @@ function Navbar() {
                 </div>
               )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) && (
-                <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
-                  PROYECTOS
-                </h3>
-              )}
+              <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
+                PROYECTOS
+              </h3>
               <Link
                 to="/projects"
-                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "📁 Ver Proyectos" : "📁"}
+                📁 Ver Proyectos
               </Link>
               <Link
                 to="/project"
-                onClick={handleLinkClick}
                 className="text-gray-300 hover:text-white py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "➕ Nuevo Proyecto" : "➕"}
+                ➕ Nuevo Proyecto
               </Link>
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) && recentProjects.length > 0 && (
+              {recentProjects.length > 0 && (
                 <>
                   <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
                     PROYECTOS RECIENTES
@@ -277,7 +209,6 @@ function Navbar() {
                     <Link
                       key={project._id}
                       to={`/projects/${project._id}/epics`}
-                      onClick={handleLinkClick}
                       className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm ${
                         currentProjectId === project._id
                           ? "bg-blue-900 text-blue-200"
@@ -290,7 +221,7 @@ function Navbar() {
                 </>
               )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) && currentProjectId && currentEpics.length > 0 && (
+              {currentProjectId && currentEpics.length > 0 && (
                 <>
                   <h3 className="text-gray-400 text-sm font-semibold mt-4 mb-2">
                     ÉPICAS ACTUALES
@@ -299,7 +230,6 @@ function Navbar() {
                     <Link
                       key={epic._id}
                       to={`/projects/${currentProjectId}/epics/${epic._id}/stories`}
-                      onClick={handleLinkClick}
                       className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm ${
                         currentEpicId === epic._id
                           ? "bg-blue-900 text-blue-200"
@@ -311,7 +241,6 @@ function Navbar() {
                   ))}
                   <Link
                     to={`/projects/${currentProjectId}/epics/new`}
-                    onClick={handleLinkClick}
                     className="text-gray-400 hover:text-gray-200 py-1 px-2 rounded hover:bg-gray-700 transition-colors text-xs"
                   >
                     ➕ Nueva Épica
@@ -319,8 +248,7 @@ function Navbar() {
                 </>
               )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
-                currentProjectId &&
+              {currentProjectId &&
                 currentEpicId &&
                 currentStories.length > 0 && (
                   <>
@@ -331,7 +259,6 @@ function Navbar() {
                       <Link
                         key={story._id}
                         to={`/projects/${currentProjectId}/epics/${currentEpicId}/stories/${story._id}/tasks`}
-                        onClick={handleLinkClick}
                         className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm ${
                           currentStoryId === story._id
                             ? "bg-green-900 text-green-200"
@@ -343,7 +270,6 @@ function Navbar() {
                     ))}
                     <Link
                       to={`/projects/${currentProjectId}/epics/${currentEpicId}/story`}
-                      onClick={handleLinkClick}
                       className="text-gray-400 hover:text-gray-200 py-1 px-2 rounded hover:bg-gray-700 transition-colors text-xs"
                     >
                       ➕ Nueva Historia
@@ -351,8 +277,7 @@ function Navbar() {
                   </>
                 )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
-                currentProjectId &&
+              {currentProjectId &&
                 currentEpicId &&
                 currentStoryId &&
                 currentTasks.length > 0 && (
@@ -365,7 +290,6 @@ function Navbar() {
                         <Link
                           key={task._id}
                           to={`/projects/${currentProjectId}/epics/${currentEpicId}/stories/${currentStoryId}/task/${task._id}`}
-                          onClick={handleLinkClick}
                           className={`text-gray-300 hover:text-white py-1 px-2 rounded hover:bg-gray-700 transition-colors text-sm block mb-1 ${
                             task.completed ? "text-green-400" : "text-gray-300"
                           }`}
@@ -381,7 +305,6 @@ function Navbar() {
                     </div>
                     <Link
                       to={`/projects/${currentProjectId}/epics/${currentEpicId}/stories/${currentStoryId}/task`}
-                      onClick={handleLinkClick}
                       className="text-gray-400 hover:text-gray-200 py-1 px-2 rounded hover:bg-gray-700 transition-colors text-xs"
                     >
                       ➕ Nueva Tarea
@@ -389,14 +312,13 @@ function Navbar() {
                   </>
                 )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) && !currentProjectId && (
+              {!currentProjectId && (
                 <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
                   💡 Selecciona un proyecto para ver toda la jerarquía
                 </div>
               )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
-                currentProjectId &&
+              {currentProjectId &&
                 !currentEpicId &&
                 epics.length === 0 && (
                   <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
@@ -404,8 +326,7 @@ function Navbar() {
                   </div>
                 )}
 
-              {((isMobile && isOpen) || (!isMobile && isOpen)) &&
-                currentEpicId &&
+              {currentEpicId &&
                 !currentStoryId &&
                 stories.length === 0 && (
                   <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
@@ -416,22 +337,18 @@ function Navbar() {
                 onClick={handleLogout}
                 className="text-gray-300 hover:text-white text-left mt-auto py-2 px-2 rounded hover:bg-gray-700 transition-colors"
               >
-                {(isMobile && isOpen) || (!isMobile && isOpen) ? "🚪 Cerrar Sesión" : "🚪"}
+                🚪 Cerrar Sesión
               </button>
             </>
           )}
         </div>
-      )}
+      </div>
 
       {/* Contenido principal */}
       <div
         className={`${
-          isMobile 
-            ? "ml-0" 
-            : isOpen 
-              ? "ml-64" 
-              : "ml-16"
-        } transition-all duration-300 flex-1`}
+          isOpen ? "ml-64" : "ml-0"
+        } transition-all duration-300 w-full`}
       >
         <Outlet />
       </div>
@@ -440,3 +357,4 @@ function Navbar() {
 }
 
 export default Navbar;
+
