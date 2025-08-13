@@ -6,7 +6,9 @@ import {
   logoutRequest, 
 } from "../../api/auth";
 import Cookies from "js-cookie";
+
 export const AuthContext = createContext();
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -19,6 +21,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(true); 
+
   const singin = async (user) => {
     try {
       const res = await loginRequest(user);
@@ -31,7 +35,8 @@ export const AuthProvider = ({ children }) => {
       setErrors([error.response?.data?.message || "Error al iniciar sesión"]);
     }
   };
- const singup = async (user) => {
+
+  const singup = async (user) => {
     try {
       console.log("Intentando registrar:", user); 
       const res = await registerRequest(user);
@@ -53,6 +58,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
+
   const logout = async () => {
     try {
       await logoutRequest();
@@ -76,6 +82,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     async function checkLogin() {
       try {
+        setLoading(true); // ← Inicia loading
         const res = await verifyTokenRequest();
         if (res.data?.message) {
           setIsAuthenticated(false);
@@ -87,15 +94,24 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         setIsAuthenticated(false);
         setUser(null);
+      } finally {
+        setLoading(false); 
       }
     }
-
     checkLogin();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ singup, singin, logout, user, isAuthenticated, errors }}
+      value={{ 
+        singup, 
+        singin, 
+        logout, 
+        user, 
+        isAuthenticated, 
+        errors, 
+        loading 
+      }}
     >
       {children}
     </AuthContext.Provider>
