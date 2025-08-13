@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   getProjectRequest,
   getProjectsRequest,
@@ -20,6 +20,15 @@ export const useProject = () => {
 export function ProjectProvider({ children }) {
   const [projects, setProjects] = useState([]);
 
+  useEffect(() => {
+    const handleLogout = () => {
+      setProjects([]);
+    };
+
+    window.addEventListener('auth:logout', handleLogout);
+    return () => window.removeEventListener('auth:logout', handleLogout);
+  }, []);
+
   const createProject = async (project) => {
     const res = await createProjectRequest(project);
     setProjects([...projects, res.data]);
@@ -34,8 +43,10 @@ export function ProjectProvider({ children }) {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.error(error.response.data.message);
+        setProjects([]);
       } else if (error.response && error.response.status === 404) {
         console.error("No se encontraron Proyectos.");
+        setProjects([]);
       }
     }
   };
