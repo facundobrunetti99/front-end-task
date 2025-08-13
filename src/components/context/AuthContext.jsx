@@ -20,16 +20,6 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
 
-  const singup = async (user) => {
-    try {
-      const res = await registerRequest(user);
-      setIsAuthenticated(true);
-      setUser(res.data);
-    } catch (error) {
-      setErrors(error.response?.data || ["Error al registrar"]);
-    }
-  };
-
  const singup = async (user) => {
     try {
       console.log("Intentando registrar:", user); 
