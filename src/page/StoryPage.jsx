@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useStory } from "../components/context/StoryContext";
 import StoryCard from "../components/StoryCard";
-import { useAuth } from '../components/context/AuthContext';
+import { useAuth } from "../components/context/AuthContext";
 
 const StoryPage = () => {
   const { projectId, epicId } = useParams();
@@ -21,7 +21,7 @@ const StoryPage = () => {
         setIsLoadingStories(false);
       }
     };
-    
+
     fetchStories();
   }, [projectId, epicId, isAuthenticated, loading]);
 
@@ -53,27 +53,31 @@ const StoryPage = () => {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-4">Stories de la Épica</h1>
-          <Link 
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Stories de la Épica
+          </h1>
+          <Link
             to={`/projects/${projectId}/epics`}
             className="text-blue-300 hover:underline mr-4"
           >
             ← Volver a Épicas
           </Link>
         </div>
-        
-        <div className='flex flex-col justify-center items-center'>
-          <p className="text-white mb-6 text-lg">No hay Stories disponibles para esta épica</p>
+
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-white mb-6 text-lg">
+            No hay Stories disponibles para esta épica
+          </p>
           <div className="flex gap-4">
             <Link
-              className='bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors'
+              className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
               to={`/projects/${projectId}/epics/${epicId}/story`}
             >
               + Crear Primera Story
             </Link>
-            <Link 
+            <Link
               to={`/projects/${projectId}/epics`}
-              className='bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors'
+              className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
             >
               Volver a Épicas
             </Link>
@@ -87,8 +91,10 @@ const StoryPage = () => {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 py-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-4">Stories de la Épica</h1>
-        <Link 
+        <h1 className="text-3xl font-bold text-white mb-4">
+          Stories de la Épica
+        </h1>
+        <Link
           to={`/projects/${projectId}/epics`}
           className="text-blue-300 hover:underline mr-4"
         >
@@ -103,15 +109,15 @@ const StoryPage = () => {
       </div>
 
       <div className="flex gap-4">
-        <Link 
-          to={`/projects/${projectId}/epics/${epicId}/story`} 
-          className='bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors'
+        <Link
+          to={`/projects/${projectId}/epics/${epicId}/story`}
+          className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
         >
           + Crear Nueva Story
         </Link>
-        <Link 
+        <Link
           to={`/projects/${projectId}/epics`}
-          className='bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors'
+          className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
         >
           Volver a Épicas
         </Link>

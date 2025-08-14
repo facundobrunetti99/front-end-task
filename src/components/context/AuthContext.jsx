@@ -3,7 +3,7 @@ import {
   registerRequest,
   loginRequest,
   verifyTokenRequest,
-  logoutRequest, 
+  logoutRequest,
 } from "../../api/auth";
 import Cookies from "js-cookie";
 
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   const singin = async (user) => {
     try {
@@ -38,15 +38,15 @@ export const AuthProvider = ({ children }) => {
 
   const singup = async (user) => {
     try {
-      console.log("Intentando registrar:", user); 
+      console.log("Intentando registrar:", user);
       const res = await registerRequest(user);
-      console.log("Respuesta del servidor:", res); 
+      console.log("Respuesta del servidor:", res);
       setIsAuthenticated(true);
       setUser(res.data);
     } catch (error) {
-      console.error("Error completo:", error); 
-      console.error("Error response:", error.response); 
-      
+      console.error("Error completo:", error);
+      console.error("Error response:", error.response);
+
       if (error.response?.data) {
         if (Array.isArray(error.response.data)) {
           setErrors(error.response.data);
@@ -69,9 +69,8 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
       setErrors([]);
-      
-  
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+
+      window.dispatchEvent(new CustomEvent("auth:logout"));
     }
   };
 
@@ -98,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setUser(null);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     }
     checkLogin();
@@ -106,14 +105,14 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ 
-        singup, 
-        singin, 
-        logout, 
-        user, 
-        isAuthenticated, 
-        errors, 
-        loading 
+      value={{
+        singup,
+        singin,
+        logout,
+        user,
+        isAuthenticated,
+        errors,
+        loading,
       }}
     >
       {children}

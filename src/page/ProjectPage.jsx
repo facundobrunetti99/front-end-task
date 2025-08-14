@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useProject } from "../components/context/ProjectContext";
-import { useAuth } from "../components/context/AuthContext"; 
+import { useAuth } from "../components/context/AuthContext";
 import ProjectCard from "../components/ProjectCard";
 const ProjectPage = () => {
   const { getProjects, projects } = useProject();
-  const { isAuthenticated, loading } = useAuth(); 
+  const { isAuthenticated, loading } = useAuth();
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   useEffect(() => {
     const fetchProjects = async () => {
@@ -16,9 +16,9 @@ const ProjectPage = () => {
         setIsLoadingProjects(false);
       }
     };
-    
+
     fetchProjects();
-  }, [isAuthenticated, loading]); 
+  }, [isAuthenticated, loading]);
 
   if (loading || isLoadingProjects) {
     return (

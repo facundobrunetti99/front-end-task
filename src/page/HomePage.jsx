@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../components/context/AuthContext";
 import { useProject } from "../components/context/ProjectContext";
 import { useTask } from "../components/context/TaskContext";
-import { 
-  FolderOpen, 
-  Zap, 
-  BookOpen, 
-  CheckSquare, 
-  Plus, 
+import {
+  FolderOpen,
+  Zap,
+  BookOpen,
+  CheckSquare,
+  Plus,
   TrendingUp,
-  Clock,                          
+  Clock,
   Users,
   Target,
   ArrowRight,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 
 const HomePage = () => {
@@ -24,7 +24,7 @@ const HomePage = () => {
     totalProjects: 0,
     recentProjects: 0,
     totalTasks: 0,
-    completedTasks: 0
+    completedTasks: 0,
   });
 
   useEffect(() => {
@@ -32,7 +32,6 @@ const HomePage = () => {
       getProjects();
     }
   }, [isAuthenticated]);
-
 
   const recentProjects = projects.slice(0, 3);
 
@@ -42,36 +41,30 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-800 text-white py-16 px-4 relative overflow-hidden">
-
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-blue-500 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="relative z-10">
-    
         <div className="max-w-6xl mx-auto text-center mb-16">
           <div className="flex items-center justify-center mb-4">
-         
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
               ¡Hola, {user?.username}!
             </h1>
-         
           </div>
           <p className="text-gray-300 text-lg md:text-xl mb-8">
             Bienvenido a tu espacio de productividad. ¿Qué quieres lograr hoy?
           </p>
 
-        
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
-            <StatCard icon={<FolderOpen size={20} />}  label="Proyectos" />
-            <StatCard icon={<TrendingUp size={20} />}  label="Esta semana" />
+            <StatCard icon={<FolderOpen size={20} />} label="Proyectos" />
+            <StatCard icon={<TrendingUp size={20} />} label="Esta semana" />
             <StatCard icon={<CheckSquare size={20} />} label="Tareas totales" />
-            <StatCard icon={<Target size={20} />}  label="Completadas" />
+            <StatCard icon={<Target size={20} />} label="Completadas" />
           </div>
         </div>
 
-       
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-16">
           <ActionCard
             title="Proyectos"
@@ -115,7 +108,6 @@ const HomePage = () => {
           />
         </div>
 
-   
         {recentProjects.length > 0 && (
           <div className="max-w-6xl mx-auto mb-16">
             <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
@@ -129,12 +121,14 @@ const HomePage = () => {
           </div>
         )}
 
-      
         <div className="text-center">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4">¿Listo para ser más productivo?</h3>
+            <h3 className="text-2xl font-bold mb-4">
+              ¿Listo para ser más productivo?
+            </h3>
             <p className="text-gray-200 mb-6">
-              Comienza creando tu primer proyecto o explora las tareas existentes.
+              Comienza creando tu primer proyecto o explora las tareas
+              existentes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -161,7 +155,6 @@ const HomePage = () => {
 
 const GuestHomePage = () => (
   <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white py-16 px-4 relative overflow-hidden">
- 
     <div className="absolute top-0 left-0 w-full h-full opacity-5">
       <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-purple-500 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -173,7 +166,8 @@ const GuestHomePage = () => (
           Gestiona tus proyectos con inteligencia
         </h1>
         <p className="text-gray-300 text-lg md:text-xl mb-8">
-          La plataforma completa para organizar proyectos, épicas, historias y tareas
+          La plataforma completa para organizar proyectos, épicas, historias y
+          tareas
         </p>
       </div>
 
@@ -242,18 +236,32 @@ const StatCard = ({ icon, value, label }) => (
   </div>
 );
 
-const ActionCard = ({ title, description, icon, color, link, actionText, actionLink, actionLabel, disabled, disabledMessage }) => (
-  <div className={`rounded-xl p-6 shadow-lg bg-gradient-to-br ${color} transition-all hover:scale-105 ${disabled ? 'opacity-50' : ''} relative overflow-hidden`}>
-
+const ActionCard = ({
+  title,
+  description,
+  icon,
+  color,
+  link,
+  actionText,
+  actionLink,
+  actionLabel,
+  disabled,
+  disabledMessage,
+}) => (
+  <div
+    className={`rounded-xl p-6 shadow-lg bg-gradient-to-br ${color} transition-all hover:scale-105 ${
+      disabled ? "opacity-50" : ""
+    } relative overflow-hidden`}
+  >
     <div className="absolute top-0 right-0 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
-    
+
     <div className="relative z-10">
       <div className="flex items-center mb-4">
         {icon}
         <h2 className="text-2xl font-bold ml-3">{title}</h2>
       </div>
       <p className="text-white/90 text-sm mb-6">{description}</p>
-      
+
       {disabled ? (
         <div className="text-white/70 text-sm italic">{disabledMessage}</div>
       ) : (
@@ -280,7 +288,9 @@ const ActionCard = ({ title, description, icon, color, link, actionText, actionL
 );
 
 const FeatureCard = ({ title, description, icon, color }) => (
-  <div className={`rounded-xl p-6 shadow-lg bg-gradient-to-br ${color} transition-transform hover:scale-105`}>
+  <div
+    className={`rounded-xl p-6 shadow-lg bg-gradient-to-br ${color} transition-transform hover:scale-105`}
+  >
     <div className="flex items-center mb-4">
       {icon}
       <h2 className="text-2xl font-bold ml-3">{title}</h2>

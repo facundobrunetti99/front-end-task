@@ -318,21 +318,17 @@ function Navbar() {
                 </div>
               )}
 
-              {currentProjectId &&
-                !currentEpicId &&
-                epics.length === 0 && (
-                  <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
-                    📝 Crea una épica para organizar tus historias
-                  </div>
-                )}
+              {currentProjectId && !currentEpicId && epics.length === 0 && (
+                <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
+                  📝 Crea una épica para organizar tus historias
+                </div>
+              )}
 
-              {currentEpicId &&
-                !currentStoryId &&
-                stories.length === 0 && (
-                  <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
-                    📖 Crea una historia para agregar tareas
-                  </div>
-                )}
+              {currentEpicId && !currentStoryId && stories.length === 0 && (
+                <div className="text-gray-500 text-xs mt-4 p-2 bg-gray-700 rounded">
+                  📖 Crea una historia para agregar tareas
+                </div>
+              )}
               <button
                 onClick={handleLogout}
                 className="text-gray-300 hover:text-white text-left mt-auto py-2 px-2 rounded hover:bg-gray-700 transition-colors"
@@ -357,4 +353,3 @@ function Navbar() {
 }
 
 export default Navbar;
-

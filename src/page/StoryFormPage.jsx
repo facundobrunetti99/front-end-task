@@ -7,9 +7,7 @@ function StoryFormPage() {
   const { register, handleSubmit, setValue } = useForm();
   const { createStory, getStory, updateStory } = useStory();
   const [successMessage, setSuccessMessage] = useState("");
-
-  const { projectId, epicId, id } = useParams(); 
-
+  const { projectId, epicId, id } = useParams();
   useEffect(() => {
     async function loadStory() {
       if (id) {
@@ -52,7 +50,9 @@ function StoryFormPage() {
           </button>
         </form>
         {successMessage && (
-          <div className="text-green-400 font-medium mt-2">{successMessage}</div>
+          <div className="text-green-400 font-medium mt-2">
+            {successMessage}
+          </div>
         )}
         <Link
           to={`/projects/${projectId}/epics/${epicId}/stories`}

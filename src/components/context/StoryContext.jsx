@@ -18,14 +18,14 @@ export const useStory = () => {
 export function StoryProvider({ children }) {
   const [stories, setStories] = useState([]);
 
-  // ✅ SOLUCIÓN: Limpiar estado cuando se hace logout
+  //limpiar estado cuando se hace logout
   useEffect(() => {
     const handleLogout = () => {
       setStories([]);
     };
 
-    window.addEventListener('auth:logout', handleLogout);
-    return () => window.removeEventListener('auth:logout', handleLogout);
+    window.addEventListener("auth:logout", handleLogout);
+    return () => window.removeEventListener("auth:logout", handleLogout);
   }, []);
 
   const createStory = async (projectId, epicId, story) => {

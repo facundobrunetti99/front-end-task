@@ -18,14 +18,14 @@ export const useTask = () => {
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
 
-  // SOLUCIÓN: Limpiar estado cuando se hace logout
+  //Limpiar estado cuando se hace logout
   useEffect(() => {
     const handleLogout = () => {
       setTasks([]);
     };
 
-    window.addEventListener('auth:logout', handleLogout);
-    return () => window.removeEventListener('auth:logout', handleLogout);
+    window.addEventListener("auth:logout", handleLogout);
+    return () => window.removeEventListener("auth:logout", handleLogout);
   }, []);
 
   const createTask = async (projectId, epicId, storyId, task) => {
@@ -46,7 +46,7 @@ export function TaskProvider({ children }) {
     } catch (error) {
       if (error.response?.status === 401) {
         console.error("No autorizado:", error.response.data.message);
-    
+
         setTasks([]);
       } else if (error.response?.status === 400) {
         console.error("Solicitud incorrecta:", error.response.data.message);

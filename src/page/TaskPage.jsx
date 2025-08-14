@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTask } from "../components/context/TaskContext";
 import TaskCard from "../components/TaskCard";
-import { useAuth } from '../components/context/AuthContext';
+import { useAuth } from "../components/context/AuthContext";
 
 const TaskPage = () => {
   const { projectId, epicId, storyId } = useParams();
@@ -21,7 +21,7 @@ const TaskPage = () => {
         setIsLoadingTasks(false);
       }
     };
-    
+
     fetchTasks();
   }, [projectId, epicId, storyId, isAuthenticated, loading]);
 
@@ -63,8 +63,8 @@ const TaskPage = () => {
             ← Volver a Historias
           </Link>
         </div>
-        
-        <div className='flex flex-col justify-center items-center'>
+
+        <div className="flex flex-col justify-center items-center">
           <p className="text-white mb-6 text-lg">
             No hay Tareas disponibles para esta historia
           </p>

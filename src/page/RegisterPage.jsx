@@ -10,7 +10,6 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm();
 
-  
   const { singup, isAuthenticated, errors: registerErrors } = useAuth();
   const navigate = useNavigate();
 
@@ -84,5 +83,4 @@ const RegisterPage = () => {
     </div>
   );
 };
-
 export default RegisterPage;

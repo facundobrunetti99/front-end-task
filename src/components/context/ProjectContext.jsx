@@ -25,8 +25,8 @@ export function ProjectProvider({ children }) {
       setProjects([]);
     };
 
-    window.addEventListener('auth:logout', handleLogout);
-    return () => window.removeEventListener('auth:logout', handleLogout);
+    window.addEventListener("auth:logout", handleLogout);
+    return () => window.removeEventListener("auth:logout", handleLogout);
   }, []);
 
   const createProject = async (project) => {
@@ -61,7 +61,6 @@ export function ProjectProvider({ children }) {
       }
     }
   };
-
   const getProject = async (id) => {
     try {
       const res = await getProjectRequest(id);

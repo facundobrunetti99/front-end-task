@@ -40,7 +40,6 @@ function ProjectFormPage() {
     try {
       setLoading(true);
       setErrorMessage("");
-
       if (params.id) {
         await updateProject(params.id, data);
         setSuccessMessage("✅ Proyecto actualizado con éxito");
