@@ -17,7 +17,7 @@ const TaskPage = () => {
         await getTasks(projectId, epicId, storyId);
         setIsLoadingTasks(false);
       } else if (!loading && !isAuthenticated) {
-        //si no está autenticado, no cargar tasks
+        //si no esta autenticado, no cargar tasks
         setIsLoadingTasks(false);
       }
     };
@@ -34,7 +34,7 @@ const TaskPage = () => {
     );
   }
 
-  //si no está autenticado, no mostrar nada
+  //si no esta autenticado, no mostrar nada
   if (!isAuthenticated) {
     return null;
   }
@@ -86,7 +86,7 @@ const TaskPage = () => {
     );
   }
 
-  // Vista principal con tareas
+  //vista principal con tareas
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 py-8">
       <div className="text-center mb-8">
