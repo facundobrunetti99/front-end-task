@@ -23,21 +23,17 @@ function StoryFormPage() {
     if (id) {
       await updateStory(projectId, epicId, id, data);
       setSuccessMessage("✅ Story actualizada con éxito");
-      setTimeout(() => {
-          reset({
-            title: "",
-            description: ""
-          });
-        }, 1500); 
+       reset({
+          title: "",
+          description: ""
+        });
     } else {
       await createStory(projectId, epicId, data);
       setSuccessMessage("✅ Story creada con éxito");
-      setTimeout(() => {
-          reset({
-            title: "",
-            description: ""
-          });
-        }, 1500); 
+       reset({
+          title: "",
+          description: ""
+        });
     }
   });
 

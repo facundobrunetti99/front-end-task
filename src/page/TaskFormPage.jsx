@@ -42,21 +42,17 @@ function TaskFormPage() {
       if (id) {
         await updateTask(projectId, epicId, storyId, id, data);
         setSuccessMessage("✅ Tarea actualizada con éxito");
-        setTimeout(() => {
-          reset({
-            title: "",
-            description: ""
-          });
-        }, 1500); 
+        reset({
+          title: "",
+          description: ""
+        });
       } else {
         await createTask(projectId, epicId, storyId, data);
         setSuccessMessage("✅ Tarea creada con éxito");
-        setTimeout(() => {
-          reset({
-            title: "",
-            description: ""
-          });
-        }, 1500); 
+       reset({
+          title: "",
+          description: ""
+        });
       }
     } catch (error) {
       console.error("Error en onSubmit:", error);
