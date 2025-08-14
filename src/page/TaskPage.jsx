@@ -17,7 +17,7 @@ const TaskPage = () => {
         await getTasks(projectId, epicId, storyId);
         setIsLoadingTasks(false);
       } else if (!loading && !isAuthenticated) {
-        // Si no está autenticado, no cargar tasks
+        //si no está autenticado, no cargar tasks
         setIsLoadingTasks(false);
       }
     };
@@ -25,7 +25,7 @@ const TaskPage = () => {
     fetchTasks();
   }, [projectId, epicId, storyId, isAuthenticated, loading]);
 
-  // Mostrar loading mientras se verifica auth
+  //mostrar loading mientras se verifica auth
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
@@ -34,12 +34,12 @@ const TaskPage = () => {
     );
   }
 
-  // Si no está autenticado, no mostrar nada
+  //si no está autenticado, no mostrar nada
   if (!isAuthenticated) {
     return null;
   }
 
-  // Mostrar loading mientras se cargan las tareas
+  //mostrar loading mientras se cargan las tareas
   if (isLoadingTasks) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
@@ -48,7 +48,6 @@ const TaskPage = () => {
     );
   }
 
-  // Vista cuando no hay tareas
   if (tasks.length <= 0) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 py-8">
