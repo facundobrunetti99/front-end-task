@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import { useProject } from "../components/context/ProjectContext";
 import { useAuth } from "../components/context/AuthContext"; 
 import ProjectCard from "../components/ProjectCard";
-
 const ProjectPage = () => {
   const { getProjects, projects } = useProject();
   const { isAuthenticated, loading } = useAuth(); 
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
-
   useEffect(() => {
     const fetchProjects = async () => {
       if (isAuthenticated && !loading) {

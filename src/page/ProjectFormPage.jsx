@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useProject } from '../components/context/ProjectContext';
-
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useProject } from "../components/context/ProjectContext";
 function ProjectFormPage() {
   const { register, handleSubmit, setValue } = useForm();
   const { createProject, getProject, updateProject } = useProject();
@@ -13,20 +12,18 @@ function ProjectFormPage() {
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
-
   useEffect(() => {
     async function loadProject() {
       if (params.id) {
         try {
           setLoading(true);
           const project = await getProject(params.id);
-          
+
           if (project) {
-            setValue('title', project.title);
-            setValue('description', project.description);
+            setValue("title", project.title);
+            setValue("description", project.description);
           } else {
             setErrorMessage("Proyecto no encontrado");
-           
           }
         } catch (error) {
           console.error("Error cargando proyecto:", error);
@@ -43,7 +40,7 @@ function ProjectFormPage() {
     try {
       setLoading(true);
       setErrorMessage("");
-      
+
       if (params.id) {
         await updateProject(params.id, data);
         setSuccessMessage("✅ Proyecto actualizado con éxito");
@@ -51,8 +48,6 @@ function ProjectFormPage() {
         await createProject(data);
         setSuccessMessage("✅ Proyecto creado con éxito");
       }
-      
-      
     } catch (error) {
       console.error("Error en onSubmit:", error);
       setErrorMessage("Error al guardar el proyecto");
@@ -86,7 +81,7 @@ function ProjectFormPage() {
             className="bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
           ></textarea>
 
-          <button 
+          <button
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
             disabled={loading}
           >
@@ -94,12 +89,12 @@ function ProjectFormPage() {
           </button>
         </form>
 
-      
         {successMessage && (
-          <div className="text-green-400 font-medium mt-2">{successMessage}</div>
+          <div className="text-green-400 font-medium mt-2">
+            {successMessage}
+          </div>
         )}
 
-     
         {errorMessage && (
           <div className="text-red-400 font-medium mt-2">{errorMessage}</div>
         )}
