@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useProject } from "../components/context/ProjectContext";
 function ProjectFormPage() {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue,reset } = useForm();
   const { createProject, getProject, updateProject } = useProject();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

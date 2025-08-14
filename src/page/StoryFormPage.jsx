@@ -4,7 +4,7 @@ import { useStory } from "../components/context/StoryContext";
 import { Link, useParams } from "react-router-dom";
 
 function StoryFormPage() {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue,reset } = useForm();
   const { createStory, getStory, updateStory } = useStory();
   const [successMessage, setSuccessMessage] = useState("");
   const { projectId, epicId, id } = useParams();

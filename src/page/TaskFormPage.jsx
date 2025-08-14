@@ -4,7 +4,7 @@ import { useTask } from "../components/context/TaskContext";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 function TaskFormPage() {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue,reset } = useForm();
   const { createTask, getTask, updateTask } = useTask();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
