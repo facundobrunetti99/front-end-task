@@ -48,9 +48,24 @@ function EpicFormPage() {
       if (epicId) {
         await updateEpic(projectId, epicId, data);
         setSuccessMessage("✅ Épica actualizada con éxito");
+           // Limpiar form después de actualizar
+        setTimeout(() => {
+          reset({
+            title: "",
+            description: ""
+          });
+        }, 1500); //Espera 1.5s para que vea el mensaje de éxito
+
       } else {
         await createEpic(projectId, data);
         setSuccessMessage("✅ Épica creada con éxito");
+           //Limpiar form después de actualizar
+        setTimeout(() => {
+          reset({
+            title: "",
+            description: ""
+          });
+        }, 1500); // Espera 1.5s para que vea el mensaje de éxito
       }
     } catch (error) {
       console.error("Error en onSubmit:", error);

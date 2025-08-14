@@ -12,12 +12,13 @@ function ProjectFormPage() {
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
+  const projectId=params.id;
   useEffect(() => {
     async function loadProject() {
-      if (params.id) {
+      if (projectId) {
         try {
           setLoading(true);
-          const project = await getProject(params.id);
+          const project = await getProject(projectId);
 
           if (project) {
             setValue("title", project.title);
@@ -34,18 +35,32 @@ function ProjectFormPage() {
       }
     }
     loadProject();
-  }, [params.id]);
+  }, [projectId]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       setLoading(true);
       setErrorMessage("");
-      if (params.id) {
-        await updateProject(params.id, data);
+      if (projectId) {
+        await updateProject(projectId, data);
         setSuccessMessage("✅ Proyecto actualizado con éxito");
+           //Limpiar form después de actualizar
+        setTimeout(() => {
+          reset({
+            title: "",
+            description: ""
+          });
+        }, 1500); 
       } else {
         await createProject(data);
         setSuccessMessage("✅ Proyecto creado con éxito");
+           //Limpiar form después de actualizar
+        setTimeout(() => {
+          reset({
+            title: "",
+            description: ""
+          });
+        }, 1500); //Espera 1.5s para que vea el mensaje de éxito
       }
     } catch (error) {
       console.error("Error en onSubmit:", error);
